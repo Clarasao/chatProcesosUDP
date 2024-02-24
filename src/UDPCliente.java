@@ -1,7 +1,5 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -25,35 +23,22 @@ public class UDPCliente extends JFrame {
             JScrollPane scrollPane = new JScrollPane(areaMensajes);
 
             campoTextoMensaje = new JTextField();
-            campoTextoMensaje.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    enviarMensaje();
-                }
-            });
+            campoTextoMensaje.addActionListener(e -> enviarMensaje());
 
             JButton btnEnviar = new JButton("Enviar");
-            btnEnviar.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    enviarMensaje();
-                }
-            });
+            btnEnviar.addActionListener(e -> enviarMensaje());
 
             setLayout(new BorderLayout());
             add(scrollPane, BorderLayout.CENTER);
             add(campoTextoMensaje, BorderLayout.SOUTH);
             add(btnEnviar, BorderLayout.EAST);
 
-            // Solicitar y establecer el nombre del cliente
-            nombreCliente = JOptionPane.showInputDialog("Ingrese su nombre:");
-            setTitle("Cliente UDP - " + nombreCliente);
+            nombreCliente = JOptionPane.showInputDialog("¡Hola! ¿Cómo te llamas?");
+            setTitle("Chat UDP - " + nombreCliente);
             setSize(400, 300);
             setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             setLocationRelativeTo(null);
             setVisible(true);
-
-            System.out.println("Cliente UDP iniciado. Escriba 'salir' para cerrar.");
 
             new Thread(this::recibirMensajes).start();
         } catch (Exception e) {
@@ -81,7 +66,6 @@ public class UDPCliente extends JFrame {
             String mensaje = campoTextoMensaje.getText();
 
             if (mensaje.equalsIgnoreCase("salir")) {
-                System.out.println("Desconectando cliente.");
                 socket.close();
                 System.exit(0);
             }
@@ -91,18 +75,13 @@ public class UDPCliente extends JFrame {
             DatagramPacket paquete = new DatagramPacket(buffer, buffer.length, servidorDireccion, PUERTO);
             socket.send(paquete);
 
-            campoTextoMensaje.setText(""); // Limpiar el campo de texto después de enviar el mensaje
+            campoTextoMensaje.setText("");
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                new UDPCliente();
-            }
-        });
+        SwingUtilities.invokeLater(() -> new UDPCliente());
     }
 }

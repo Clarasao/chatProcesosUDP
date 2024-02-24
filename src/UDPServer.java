@@ -34,7 +34,7 @@ public class UDPServer extends JFrame {
     private void iniciarServidor() {
         try {
             socket = new DatagramSocket(PUERTO);
-            areaMensajes.append("Servidor UDP iniciado en el puerto " + PUERTO + "\n");
+            areaMensajes.append("¡Servidor UDP activo en el puerto " + PUERTO + "!\n");
 
             new Thread(this::esperarClientes).start();
         } catch (Exception e) {
@@ -52,12 +52,11 @@ public class UDPServer extends JFrame {
                 InetAddress direccionCliente = paquete.getAddress();
 
                 if (!clientesConectados.containsKey(direccionCliente)) {
-                    // Nuevo cliente: solicitar nombre
-                    enviarMensaje("Ingrese su nombre:", direccionCliente);
+                    enviarMensaje("¡Hola! ¿Cómo te llamas?", direccionCliente);
                     String nombreCliente = recibirMensaje(direccionCliente);
-                    areaMensajes.append("Nuevo cliente conectado: " + nombreCliente + " (" + direccionCliente + ")\n");
+                    areaMensajes.append("Nuevo cliente: " + nombreCliente + " (" + direccionCliente + ")\n");
                     clientesConectados.put(direccionCliente, nombreCliente);
-                    enviarMensaje("¡Bienvenido, " + nombreCliente + "!", direccionCliente);
+                    enviarMensaje("¡Bienvenid@, " + nombreCliente + "!", direccionCliente);
                 }
 
                 String mensaje = recibirMensaje(direccionCliente);
@@ -101,11 +100,6 @@ public class UDPServer extends JFrame {
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                new UDPServer();
-            }
-        });
+        SwingUtilities.invokeLater(() -> new UDPServer());
     }
 }
